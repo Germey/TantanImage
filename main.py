@@ -30,16 +30,21 @@ def get_images_urls(location):
     }
 
     url = 'https://core.tantanapp.com/v1/users?with=questions,contacts&search=suggested&limit=100'
+    try:
 
-    response = requests.get(url, headers=headers)
-    print u'正在获取列头像列表'
-    result = response.json()
-    users = result['data']['users']
-    for user in users:
-        pictures = user['pictures']
-        for picture in pictures:
-            urls.append(picture['url'])
-    return urls
+        response = requests.get(url, headers=headers)
+        print u'正在获取列头像列表'
+        result = response.json()
+        users = result['data']['users']
+        for user in users:
+            pictures = user['pictures']
+            if len(pictures):
+                urls.append(pictures[0]['url'])
+        return urls
+
+    except Exception:
+        print u'获取列表失败'
+        return False
 
 
 def save_file(path, name, data):
@@ -50,10 +55,12 @@ def save_file(path, name, data):
     print u'成功保存图片', name
     resize_img(name)
 
+
 def resize_img(name):
     img = Image.open(PATH + name)
     out = img.resize((800, 800), Image.ANTIALIAS)
-    out.save(PATH+name)
+    out.save(PATH + name)
+
 
 def get_image(url):
     try:
@@ -71,11 +78,13 @@ def get_file_name():
 
 
 def parse_list(urls):
-    for url in urls:
-        data = get_image(url)
-        print url
-        if data:
-            save_file(PATH, get_file_name(), data)
+    if urls:
+        for url in urls:
+            data = get_image(url)
+            print url
+            if data:
+                save_file(PATH, get_file_name(), data)
+
 
 while True:
     location = get_random_location()
