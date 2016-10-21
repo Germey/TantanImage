@@ -4,7 +4,9 @@ import random
 import requests
 from PIL import Image
 
-PATH = 'images/'
+path = 'images/'
+
+count = len(os.listdir(path))
 
 
 def get_random_location():
@@ -41,7 +43,6 @@ def get_images_urls(location):
             if len(pictures):
                 urls.append(pictures[0]['url'])
         return urls
-
     except Exception:
         print u'获取列表失败'
         return False
@@ -57,9 +58,10 @@ def save_file(path, name, data):
 
 
 def resize_img(name):
-    img = Image.open(PATH + name)
+    global path
+    img = Image.open(path + name)
     out = img.resize((800, 800), Image.ANTIALIAS)
-    out.save(PATH + name)
+    out.save(path + name)
 
 
 def get_image(url):
@@ -73,8 +75,10 @@ def get_image(url):
 
 
 def get_file_name():
-    count = len(os.listdir(PATH))
+    global count
+    count += 1
     return str(count + 1) + '.png'
+    time.sleep(0.5)
 
 
 def parse_list(urls):
@@ -83,7 +87,7 @@ def parse_list(urls):
             data = get_image(url)
             print url
             if data:
-                save_file(PATH, get_file_name(), data)
+                save_file(path, get_file_name(), data)
 
 
 while True:
