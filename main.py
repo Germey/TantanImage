@@ -2,6 +2,7 @@
 import os
 import random
 import requests
+from PIL import Image
 
 PATH = 'images/'
 
@@ -47,7 +48,12 @@ def save_file(path, name, data):
     file.write(data)
     file.close()
     print u'成功保存图片', name
+    resize_img(name)
 
+def resize_img(name):
+    img = Image.open(PATH + name)
+    out = img.resize((800, 800), Image.ANTIALIAS)
+    out.save(PATH+name)
 
 def get_image(url):
     try:
@@ -61,16 +67,17 @@ def get_image(url):
 
 def get_file_name():
     count = len(os.listdir(PATH))
-    return str(count + 1) + '.jpeg'
+    return str(count + 1) + '.png'
 
 
 def parse_list(urls):
     for url in urls:
         data = get_image(url)
+        print url
         if data:
             save_file(PATH, get_file_name(), data)
 
-
-location = get_random_location()
-urls = get_images_urls(location)
-parse_list(urls)
+while True:
+    location = get_random_location()
+    urls = get_images_urls(location)
+    parse_list(urls)
