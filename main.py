@@ -61,7 +61,7 @@ def get_image(url):
 
 def get_file_name():
     count = len(os.listdir(PATH))
-    return str(count + 1) + '.jpg'
+    return str(count + 1) + '.jpeg'
 
 
 def parse_list(urls):
